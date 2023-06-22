@@ -31,16 +31,22 @@ class DishesFragment : Fragment() {
 
         viewModel.getDishes()
 
-        viewModel.dishesList.observe(this.viewLifecycleOwner) { items ->
+        viewModel.dishesList.observe(this.viewLifecycleOwner) { dishes ->
 
-            items.let {
-                dishAdapter.submitList(it)
-                tagAdapter.submitList(viewModel.tagsList.value)
-            }
+            dishAdapter.submitList(dishes)
+        }
+
+        viewModel.tagsList.observe(this.viewLifecycleOwner) { tags ->
+
+            tagAdapter.submitList(tags)
         }
 
         viewModel.status.observe(viewLifecycleOwner) {newStatus ->
-
+            when(newStatus) {
+                DishDataStatus.SUCCESS -> binding.imageViewError.visibility = View.GONE
+                DishDataStatus.LOADING -> binding.imageViewError.visibility = View.GONE
+                DishDataStatus.ERROR -> binding.imageViewError.visibility = View.VISIBLE
+            }
         }
 
         return binding.root

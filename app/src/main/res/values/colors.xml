@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pink">#FFFD3A69</color>
     <color name="background">#FFAAAAAD</color>
+    <color name="bottom_menu_color">#FF7B7B7B</color>
 </resources>

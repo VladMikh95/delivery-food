@@ -1,6 +1,5 @@
 package ml.vladmikh.projects.delivery_food.ui.dishes
 
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,8 +19,8 @@ class DishesViewModel @Inject constructor(
     private var _dishesList = MutableLiveData<List<Dish>>()
     val dishesList: LiveData<List<Dish>> get() = _dishesList
 
-    private var _tagsList = MutableLiveData<List<Tag>>()
-    val tagsList: LiveData<List<Tag>> get() = _tagsList
+    private var _tagsList = MutableLiveData<MutableList<Tag>>()
+    val tagsList: LiveData<MutableList<Tag>> get() = _tagsList
 
     private var _status = MutableLiveData<DishDataStatus>()
 
@@ -65,13 +64,12 @@ class DishesViewModel @Inject constructor(
 
     //Получение имен тегов из объектов Dish
     private fun getTagsFromDish(): List<String> {
+
         val listTagNames = ArrayList<String>()
-        Log.i("abc", listDishesStream.toString())
 
         for (dish in listDishesStream) {
 
             val tagNames = dish.tags
-            Log.i("abc", tagNames.toString())
 
             for (tagName in tagNames) {
                 if (!isHasTags(tagName, listTagNames)) {
@@ -80,7 +78,6 @@ class DishesViewModel @Inject constructor(
             }
         }
 
-        Log.i("abc", listTagNames.toString())
         return listTagNames
 
     }
@@ -114,14 +111,30 @@ class DishesViewModel @Inject constructor(
 
     //Изменение выбранного тега в списке
     fun changeSelectedTag(tagName : String) {
-        val newListTag = _tagsList.value
+        val tags = _tagsList.value
+        val newListTag = ArrayList<Tag>()
 
-        if (newListTag != null) {
-            for(newTag in newListTag) {
-                newTag.isSelected = newTag.name == tagName
+        if (tags != null) {
+            for(tag in tags) {
+
+                if (tag.name == tagName) {
+                    newListTag.add(Tag(tag.name, true))
+                } else {
+                    newListTag.add(Tag(tag.name, false))
+                }
             }
 
+            /*for (i in 0 until _tagsList.value.size) {
+                if (newListTag[i].name == tagName) {
+                    newListTag[i] = newListTag[i].copy(isSelected = true)
+                } else {
+                    newListTag[i].isSelected = false
+                }
+            }*/
 
         }
+
+        _tagsList.value = newListTag
+
     }
 }
